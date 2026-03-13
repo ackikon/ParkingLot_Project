@@ -18,9 +18,41 @@ fun create(parkArea: MutableList<ParkingLot>, value: Int = 5) {
     println("Created a parking lot with $value spots.")
 }
 
-fun status(parkArea: MutableList<ParkingLot>) {
-    if (parkArea.filter { !it.getState() } == emptyList<ParkingLot>()) return println("Parking lot is empty.")
+fun status(parkArea: MutableList<ParkingLot>): String {
+    if (parkArea.filter { !it.getState() }.toList() == emptyList<ParkingLot>()) return "Parking lot is empty."
+
+    val listOfCars: MutableList<String> = emptyList<String>().toMutableList()
     for (parkingLot in parkArea) {
-        if (!parkingLot.getState()) println("${parkArea.indexOf(parkingLot) + 1} ${parkingLot.registrationNumber} ${parkingLot.color}")
+        if (!parkingLot.getState()) listOfCars.add("${parkArea.indexOf(parkingLot) + 1} ${parkingLot.registrationNumber} ${parkingLot.color}")
     }
+
+    return listOfCars.joinToString("\n")
+}
+
+fun status(parkArea: MutableList<ParkingLot>,
+           action: String,
+           value: String,
+           ):String {
+
+    when (action) {
+        "spot_by_color", "reg_by_color"-> {
+            if (parkArea.filter { it.color.equals(value, true) }.toList() == emptyList<ParkingLot>()) {
+                return "No cars with color $value were found."
+            }
+        }
+        else -> {
+            if (parkArea.filter { it.registrationNumber == value } == emptyList<ParkingLot>()) return "No cars with registration number $value were found."
+        }
+    }
+
+    val listOfCars = emptyList<Any>().toMutableList()
+        for (parkingLot in parkArea) {
+            when (action) {
+                "spot_by_color" -> if (parkingLot.color.equals(value, ignoreCase = true)) listOfCars.add(parkArea.indexOf(parkingLot) + 1)
+                "reg_by_color" -> if (parkingLot.color.equals(value, ignoreCase = true)) listOfCars.add(parkingLot.registrationNumber)
+                "spot_by_reg" -> if (parkingLot.registrationNumber.equals(value, ignoreCase = true)) listOfCars.add(parkArea.indexOf(parkingLot) + 1)
+            }
+        }
+
+    return listOfCars.joinToString(", ")
 }

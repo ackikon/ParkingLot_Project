@@ -21,9 +21,10 @@ fun main() {
                         parkArea[this[1].toInt() - 1].leave()
                         println("Spot ${this[1]} is free")
                     }
-                "status" -> status(parkArea)
+                "status" -> status(parkArea).let(::println)
+                "spot_by_color", "reg_by_color", "spot_by_reg" -> status(parkArea, this[0], this[1]).let(::println)
                 "exit" -> break@parking
-                else -> break@parking
+                else -> println("Enter command")
             }
         }
     }
